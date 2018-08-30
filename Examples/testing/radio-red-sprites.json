@@ -1,0 +1,5 @@
+[
+    ["unchecked", ["red-dot-sprite.json"]],
+    ["hover", ["yellow-dot-sprite.json"]],
+    ["checked", ["green-dot-sprite.json"]]
+]

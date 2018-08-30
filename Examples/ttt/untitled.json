@@ -1,0 +1,357 @@
+{
+    "name": "ttt",
+    "x": 0,
+    "y": 0,
+    "width": 1280,
+    "height": 720,
+    "elements": [
+        {
+            "id": 0,
+            "type": 1,
+            "name": "f7",
+            "event": "f:7",
+            "x": 195,
+            "y": 347,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 1,
+            "type": 1,
+            "name": "f6",
+            "event": "f:6",
+            "x": 42,
+            "y": 349,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 2,
+            "type": 1,
+            "name": "board",
+            "event": "",
+            "x": 8,
+            "y": 8,
+            "width": 512,
+            "height": 512,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "sprite-board.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [
+                9,
+                8,
+                7,
+                6,
+                5,
+                4,
+                3,
+                1,
+                0
+            ],
+            "visible": true
+        },
+        {
+            "id": 3,
+            "type": 1,
+            "name": "f8",
+            "event": "f:8",
+            "x": 351,
+            "y": 352,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 4,
+            "type": 1,
+            "name": "f3",
+            "event": "f:3",
+            "x": 37,
+            "y": 194,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 5,
+            "type": 1,
+            "name": "f4",
+            "event": "f:4",
+            "x": 193,
+            "y": 194,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 6,
+            "type": 1,
+            "name": "f5",
+            "event": "f:5",
+            "x": 349,
+            "y": 191,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 7,
+            "type": 1,
+            "name": "f0",
+            "event": "f:0",
+            "x": 33,
+            "y": 51,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 8,
+            "type": 1,
+            "name": "f1",
+            "event": "f:1",
+            "x": 189,
+            "y": 43,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 9,
+            "type": 1,
+            "name": "f2",
+            "event": "f:2",
+            "x": 341,
+            "y": 46,
+            "width": 128,
+            "height": 128,
+            "rotation": 0,
+            "text": "My Image",
+            "asset": "",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 2,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 10,
+            "type": 2,
+            "name": "new-game",
+            "event": "new-game",
+            "x": 630,
+            "y": 39,
+            "width": 200,
+            "height": 44,
+            "rotation": 0,
+            "text": "NEW GAME",
+            "asset": "ctrl-blue-btn.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [
+                12
+            ],
+            "visible": true
+        },
+        {
+            "id": 11,
+            "type": 0,
+            "name": "gameover",
+            "event": "",
+            "x": 33,
+            "y": 505,
+            "width": 476,
+            "height": 44,
+            "rotation": 0,
+            "text": "foo",
+            "asset": "ctrl-blue-btn-text.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true
+        },
+        {
+            "id": 12,
+            "type": 0,
+            "name": "Text",
+            "event": "",
+            "x": 11,
+            "y": -1,
+            "width": 150,
+            "height": 44,
+            "rotation": 0,
+            "text": "NEW GAME",
+            "asset": "ctrl-blue-btn-text.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": 10,
+            "children": [],
+            "visible": true
+        }
+    ],
+    "assets": [
+        {
+            "name": "uipackSpace_sheet.png",
+            "file": "uipackSpace_sheet.png",
+            "id": 0
+        },
+        {
+            "name": "ttt-atlas.png",
+            "file": "ttt-atlas.png",
+            "id": 1
+        },
+        {
+            "name": "board.png",
+            "file": "board.png",
+            "id": 2
+        },
+        {
+            "name": "sprite-btn-default.json",
+            "file": "sprite-btn-default.json",
+            "id": 3
+        },
+        {
+            "name": "sprite-btn-active.json",
+            "file": "sprite-btn-active.json",
+            "id": 4
+        },
+        {
+            "name": "kenvector_future.ttf",
+            "file": "kenvector_future.ttf",
+            "id": 5
+        },
+        {
+            "name": "sprite-x.json",
+            "file": "sprite-x.json",
+            "id": 6
+        },
+        {
+            "name": "uipackSpace_sheet.xml",
+            "file": "uipackSpace_sheet.xml",
+            "id": 7
+        },
+        {
+            "name": "ttt-atlas.json",
+            "file": "ttt-atlas.json",
+            "id": 8
+        },
+        {
+            "name": "sprite-btn-hover.json",
+            "file": "sprite-btn-hover.json",
+            "id": 9
+        },
+        {
+            "name": "kenvector_future_thin.ttf",
+            "file": "kenvector_future_thin.ttf",
+            "id": 10
+        },
+        {
+            "name": "ctrl-blue-btn.json",
+            "file": "ctrl-blue-btn.json",
+            "id": 11
+        },
+        {
+            "name": "sprite-board.json",
+            "file": "sprite-board.json",
+            "id": 12
+        },
+        {
+            "name": "sprite-o.json",
+            "file": "sprite-o.json",
+            "id": 13
+        },
+        {
+            "name": "berlin-sans-demibold_0.png",
+            "file": "berlin-sans-demibold_0.png",
+            "id": 14
+        },
+        {
+            "name": "berlin-sans-demibold.fnt",
+            "file": "berlin-sans-demibold.fnt",
+            "id": 15
+        },
+        {
+            "name": "fsprite-berlin-sans-black.json",
+            "file": "fsprite-berlin-sans-black.json",
+            "id": 16
+        },
+        {
+            "name": "fsprite-berlin-sans-green.json",
+            "file": "fsprite-berlin-sans-green.json",
+            "id": 17
+        },
+        {
+            "name": "fsprite-berlin-sans-red.json",
+            "file": "fsprite-berlin-sans-red.json",
+            "id": 18
+        },
+        {
+            "name": "ctrl-blue-btn-text.json",
+            "file": "ctrl-blue-btn-text.json",
+            "id": 19
+        }
+    ]
+}

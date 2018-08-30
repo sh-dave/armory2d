@@ -1,0 +1,39 @@
+sudo: required
+dist: trusty
+
+language: node_js
+node_js: 8
+
+os:
+  - linux
+  - osx
+    
+install:
+  - npm i -g lix haxe-travix
+  - lix download
+
+script:
+  - travix interp
+  - travix neko
+  - travix python
+  - travix node
+  - travix node -D tink_core_no_error_pos
+  # - travix flash
+  # - travix java
+  - travix cpp
+  - travix cs
+  - travix php
+
+env:
+  secure: dhVtIkMcUYAyAK92oEzBiuHE2uH9MQ46PD8zdKnnky9WiH54x/Y167Wt1NvUhFxhNzfu44VpI5d1ngnSV5pwum+E/RfoJNoqIsRsy1dL/vnTwyBdGDwbBJc/RDqXYUQnF8okR3JBZKmr9FLXTl5DMKOP+mJE1IF6GLijTDR4pf8=
+
+jobs:
+  include:
+    - stage: deploy
+      os: linux
+      haxe: "3.4.7"
+      script: skip
+      after_success:
+        - haxelib install travix
+        - haxelib run travix install
+        - travix release

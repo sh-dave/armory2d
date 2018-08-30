@@ -1,0 +1,72 @@
+package yui;
+
+/*
+
+"base" element handles events for composites
+
+button -> composite
+    background (normal, pressed, hover)
+    icon / text (normal, pressed, hover) offsets
+
+button
+    sprite
+
+stateMap
+    <hover> inherit default
+    <active> inherit default
+*/
+
+class DefaultBehaviors {
+    public static function clickEvent( ui: Yui, e: TElement, x: Float, y: Float, w: Float, h: Float, on: String -> Void ) {
+		var isReleased = ui.isReleased(x, y, w, h);
+
+		if (isReleased) {
+			var event = e.event;
+
+			if (event != null && event != '') {
+				on(event);
+			}
+		}
+    }
+
+    public static function checkBehavior( ui: Yui, e: TElement, x: Float, y: Float, w: Float, h: Float, on: String -> Void ) {
+		var isReleased = ui.isReleased(x, y, w, h);
+
+		if (isReleased) {
+            ui.toggleCheck(e.id);
+		}
+
+        updateStyles(ui, e, x, y, w, h);
+    }
+
+    public static function radioBehavior( ui: Yui, e: TElement, x: Float, y: Float, w: Float, h: Float, on: String -> Void ) {
+		var isReleased = ui.isReleased(x, y, w, h);
+
+		if (isReleased) {
+            ui.activateInRadioGroup(e.id);
+        }
+
+        updateStyles(ui, e, x, y, w, h);
+    }
+
+// TODO (DK) this should be done for every root element
+    // and pass state up to children
+    static function updateStyles( ui: Yui, e: TElement, x: Float, y: Float, w: Float, h: Float ) {
+		var isReleased = ui.isReleased(x, y, w, h);
+        var isPressed = ui.isPressed(x, y, w, h);
+        var isHover = ui.isHovered(x, y, w, h);
+
+		if (isReleased) {
+            updateStyle(ui, e, x, y, w, h, 'hover');
+        } else if (isPressed) {
+            updateStyle(ui, e, x, y, w, h, 'pressed');
+        } else if (isHover) {
+            updateStyle(ui, e, x, y, w, h, 'hover');
+        } else {
+            updateStyle(ui, e, x, y, w, h, 'idle');
+        }
+    }
+
+	public static function updateStyle( ui: Yui, e: TElement, x: Float, y: Float, w: Float, h: Float, state: String ) {
+	}
+}

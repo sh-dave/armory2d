@@ -1,0 +1,19 @@
+{
+	"name": "tink_json",
+	"classPath": "src",
+	"dependencies": {
+		"tink_typecrawler": ""
+	},
+	"url": "http://haxetink.org/tink_json",
+	"contributors": [
+		"back2dos"
+	],
+	"version": "0.8.0",
+	"releasenote": "Simplify custom serialization and parsing.",
+	"tags": [
+		"tink",
+		"cross",
+		"json"
+	],
+	"license": "MIT"
+}

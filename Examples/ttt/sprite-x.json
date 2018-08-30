@@ -1,0 +1,10 @@
+{
+    "AtlasTextureSpriteData": {
+        "atlasFmt": {
+            "TpjsaaAtlasFormat": {
+                "atlasUrl": "ttt-atlas.json"
+            }
+        },
+        "atlasRegionId": "x.png"
+    }
+}

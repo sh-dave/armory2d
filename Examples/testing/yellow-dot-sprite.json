@@ -1,0 +1,10 @@
+{
+    "AtlasTextureSpriteData": {
+        "atlasFmt": {
+            "KenneyAtlasFormat": {
+                "atlasUrl": "uipackSpace_sheet.xml"
+            }
+        },
+        "atlasRegionId": "dotYellow.png"
+    }
+}

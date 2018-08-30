@@ -1,0 +1,16 @@
+{
+    "NineSliceSpriteData": {
+        "atlasFmt": {
+            "KenneyAtlasFormat": {
+                "atlasUrl": "uipackSpace_sheet.xml"
+            }
+        },
+        "atlasRegionId": "glassPanel_cornerBL.png",
+        "cutRegion": {
+            "left": 48,
+            "top": 5,
+            "width": 16,
+            "height": 80
+        }
+    }
+}

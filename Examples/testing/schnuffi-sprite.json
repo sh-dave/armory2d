@@ -1,0 +1,13 @@
+{
+    "SpriterEntityData": {
+		"scml": "schnuffi.scml",
+		"entityName": "schnueffi-0",
+        "atlasFmt": {
+            "TpjsaaAtlasFormat": {
+                "atlasUrl": "schnuffi-atlas.json"
+            }
+		},
+        "animation": "idle-left",
+        "scale": 0.42
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "NineSliceSpriteData": {
+        "atlasFmt": {
+            "KenneyAtlasFormat": {
+                "atlasUrl": "uipackSpace_sheet.xml"
+            }
+        },
+        "atlasRegionId": "squareRed.png",
+        "cutRegion": {
+            "left": 8,
+            "top": 0,
+            "width": 4,
+            "height": 26
+        }
+    }
+}

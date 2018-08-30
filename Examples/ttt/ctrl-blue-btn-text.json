@@ -1,0 +1,5 @@
+[
+    ["idle", ["fsprite-berlin-sans-black.json"]],
+    ["hover", ["fsprite-berlin-sans-red.json"]],
+    ["active", ["fsprite-berlin-sans-green.json"]]
+]

@@ -14,15 +14,17 @@ class Main {
 		var h = 900;
 		if (w > kha.Display.primary.width) w = kha.Display.primary.width;
 		if (h > kha.Display.primary.height) h = kha.Display.primary.height;
-		kha.System.init({ title : "Armory2D", width : w, height : h, resizable: true, maximizable: true }, initialized);
+		var windowFeatures = kha.WindowOptions.FeatureMaximizable | kha.WindowOptions.FeatureResizable;
+
+		kha.System.start({ title: "Armory2D", width: w, height: h, window: { windowFeatures: windowFeatures } }, initialized);
 	}
-	
-	static function initialized() {
+
+	static function initialized( _ ) {
 
 		prefs = { path: "", scaleFactor: 1.0 };
 
 		#if kha_krom
-		
+
 		var c = Krom.getArgCount();
 		// ./krom . . --nosound canvas_path scale_factor
 		if (c > 4) prefs.path = Krom.getArg(4);
@@ -37,13 +39,14 @@ class Main {
 			var raw:TCanvas = haxe.Json.parse(cblob.toString());
 			inst = new Elements(raw);
 		});
-		
+
 		#else
 
 		var raw:TCanvas = { name: "untitled", x: 0, y: 0, width: 1280, height: 720, elements: [], assets: [] };
 		inst = new Elements(raw);
-
-		#end		
+		prefs.path = 'untitled.json';
+		cwd = untyped __js__('__dirname');
+		#end
 	}
 }
 

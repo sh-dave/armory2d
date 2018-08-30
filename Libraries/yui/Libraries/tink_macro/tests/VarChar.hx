@@ -1,0 +1,1 @@
+typedef VarChar<Const> = String;

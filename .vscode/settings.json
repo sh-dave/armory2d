@@ -1,0 +1,8 @@
+{
+    "haxe.executable": {
+        "windows": "Kha\\Tools\\haxe\\haxe.exe",
+        "linux": "Kha/Tools/haxe/haxe-linux64",
+        "osx": "Kha/Tools/haxe/haxe-osx"
+    },
+    "debug.inlineValues": false
+}

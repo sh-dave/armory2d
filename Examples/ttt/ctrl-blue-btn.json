@@ -1,0 +1,5 @@
+[
+    ["idle", ["sprite-btn-default.json"]],
+    ["hover", ["sprite-btn-hover.json"]],
+    ["active", ["sprite-btn-active.json"]]
+]

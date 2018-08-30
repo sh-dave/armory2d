@@ -1,0 +1,23 @@
+{
+	"name": "tink_core",
+	"description": "Tinkerbell Core",
+	"classPath": "src",
+	"url": "http://haxetink.org/tink_core",
+	"contributors": [
+		"back2dos"
+	],
+	"version": "1.17.0",
+	"releasenote": "Add support for tink_core_no_error_pos.",
+	"tags": [
+		"tink",
+		"cross",
+		"utility",
+		"reactive",
+		"functional",
+		"async",
+		"lazy",
+		"signal",
+		"event"
+	],
+	"license": "MIT"
+}

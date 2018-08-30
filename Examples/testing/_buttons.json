@@ -1,0 +1,224 @@
+{
+    "name": "_buttons",
+    "x": 0,
+    "y": 0,
+    "width": 1280,
+    "height": 720,
+    "elements": [
+        {
+            "id": 0,
+            "type": 2,
+            "name": "start",
+            "event": "start",
+            "x": 16,
+            "y": 16,
+            "width": 150,
+            "height": 26,
+            "rotation": 0,
+            "text": "Start",
+            "asset": "btn-blue-sprites.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "navigation": {
+                "up": 3,
+                "down": 2
+            }
+        },
+        {
+            "id": 1,
+            "type": 2,
+            "name": "settings",
+            "event": "settings",
+            "x": 358,
+            "y": 132,
+            "width": 320,
+            "height": 26,
+            "rotation": 0,
+            "text": "Settings",
+            "asset": "btn-blue-sprites.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "navigation": {
+                "up": 1,
+                "down": 3
+            }
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "quit",
+            "event": "quit",
+            "x": 84,
+            "y": 208,
+            "width": 150,
+            "height": 26,
+            "rotation": 0,
+            "text": "Quit",
+            "asset": "btn-blue-sprites.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "navigation": {
+                "up": 2,
+                "down": 1
+            }
+        },
+        {
+            "id": 3,
+            "type": 7,
+            "name": "Radio",
+            "event": "",
+            "x": 129,
+            "y": 449,
+            "width": 150,
+            "height": 44,
+            "rotation": 0,
+            "text": "My Radio",
+            "asset": "radio-red-sprites.json",
+            "color": -1,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "state": [
+                "RadioState",
+                1,
+                "defaultGroup",
+                0
+            ]
+        },
+        {
+            "id": 4,
+            "type": 7,
+            "name": "Radio",
+            "event": "",
+            "x": 104,
+            "y": 534,
+            "width": 150,
+            "height": 44,
+            "rotation": 0,
+            "text": "My Radio",
+            "asset": "radio-red-sprites.json",
+            "color": 16777215,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "state": [
+                "RadioState",
+                1,
+                "defaultGroup",
+                0
+            ]
+        },
+        {
+            "id": 5,
+            "type": 7,
+            "name": "Radio",
+            "event": "",
+            "x": 81,
+            "y": 610,
+            "width": 150,
+            "height": 44,
+            "rotation": 0,
+            "text": "My Radio",
+            "asset": "radio-red-sprites.json",
+            "color": -1,
+            "anchor": 0,
+            "parent": null,
+            "children": [],
+            "visible": true,
+            "state": [
+                "RadioState",
+                1,
+                "defaultGroup",
+                0
+            ]
+        }
+    ],
+    "assets": [
+        {
+            "name": "uipackSpace_sheet.png",
+            "file": "uipackSpace_sheet.png",
+            "id": 0
+        },
+        {
+            "name": "metal-panel-red-corner-sprite.json",
+            "file": "metal-panel-red-corner-sprite.json",
+            "id": 1
+        },
+        {
+            "name": "red-dot-sprite.json",
+            "file": "red-dot-sprite.json",
+            "id": 2
+        },
+        {
+            "name": "metal-panel-green-corner-sprite.json",
+            "file": "metal-panel-green-corner-sprite.json",
+            "id": 3
+        },
+        {
+            "name": "metal-panel-blue-corner-sprite.json",
+            "file": "metal-panel-blue-corner-sprite.json",
+            "id": 4
+        },
+        {
+            "name": "kenvector_future.ttf",
+            "file": "kenvector_future.ttf",
+            "id": 5
+        },
+        {
+            "name": "yellow-dot-sprite.json",
+            "file": "yellow-dot-sprite.json",
+            "id": 6
+        },
+        {
+            "name": "kenvector_future_thin.ttf",
+            "file": "kenvector_future_thin.ttf",
+            "id": 7
+        },
+        {
+            "name": "radio-red-sprites.json",
+            "file": "radio-red-sprites.json",
+            "id": 8
+        },
+        {
+            "name": "green-dot-sprite.json",
+            "file": "green-dot-sprite.json",
+            "id": 9
+        },
+        {
+            "name": "uipackSpace_sheet.xml",
+            "file": "uipackSpace_sheet.xml",
+            "id": 10
+        },
+        {
+            "name": "blue-button-sprite.json",
+            "file": "blue-button-sprite.json",
+            "id": 11
+        },
+        {
+            "name": "red-button-sprite.json",
+            "file": "red-button-sprite.json",
+            "id": 12
+        },
+        {
+            "name": "yellow-button-sprite.json",
+            "file": "yellow-button-sprite.json",
+            "id": 13
+        },
+        {
+            "name": "btn-blue-sprites.json",
+            "file": "btn-blue-sprites.json",
+            "id": 14
+        }
+    ]
+}

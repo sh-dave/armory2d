@@ -1,0 +1,5 @@
+[
+    ["idle", ["blue-button-sprite.json"]],
+    ["hover", ["yellow-button-sprite.json"]],
+    ["active", ["red-button-sprite.json"]]
+]

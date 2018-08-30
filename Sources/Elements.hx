@@ -3,12 +3,16 @@ package ;
 import zui.*;
 import zui.Zui;
 import zui.Canvas;
+import yui.Yui;
 
 @:access(zui.Zui)
 class Elements {
 	var ui:Zui;
 	var cui:Zui;
+	var cyui: Yui;
 	var canvas:TCanvas;
+
+	var selectedRenderer = 1;
 
 	static var defaultWindowW = 240;
 	static var windowW = defaultWindowW;
@@ -23,6 +27,7 @@ class Elements {
 	static var coffX = 70.0;
 	static var coffY = 50.0;
 
+	var assetsToLoad = 0;
 	var dropPath = "";
 	var drag = false;
 	var dragLeft = false;
@@ -52,6 +57,11 @@ class Elements {
 	var lastCanvasH = 0;
 
 	public function new(canvas:TCanvas) {
+		reinit(canvas);
+		kha.Assets.loadEverything(loaded);
+	}
+
+	function reinit( canvas: TCanvas ) {
 		this.canvas = canvas;
 
 		// Reimport assets
@@ -60,25 +70,23 @@ class Elements {
 			canvas.assets = [];
 			for (a in assets) importAsset(a.file);
 		}
-
-		kha.Assets.loadEverything(loaded);
 	}
 
 	static function toRelative(path:String, cwd:String):String {
 		path = haxe.io.Path.normalize(path);
 		cwd = haxe.io.Path.normalize(cwd);
-		
+
 		var ar:Array<String> = [];
 		var ar1 = path.split("/");
 		var ar2 = cwd.split("/");
-		
+
 		var index = 0;
 		while (ar1[index] == ar2[index]) index++;
-		
+
 		for (i in 0...ar2.length - index) ar.push("..");
-		
+
 		for (i in index...ar1.length) ar.push(ar1[i]);
-		
+
 		return ar.join("/");
 	}
 
@@ -96,6 +104,27 @@ class Elements {
 		cui = new Zui({scaleFactor: 1.0, font: kha.Assets.fonts.DroidSans, autoNotifyInput: true, theme: zui.Themes.light});
 		uimodal = new Zui( { font: kha.Assets.fonts.DroidSans, scaleFactor: Main.prefs.scaleFactor } );
 
+// yui setup
+		cyui = new Yui({
+			data: new yui.Data(),
+			renderers: [
+				Image => yui.DefaultElements.drawImage,
+				Button => yui.DefaultElements.drawButton,
+				Text => yui.DefaultElements.drawText,
+				Radio => yui.DefaultElements.drawRadioButton,
+				Check => yui.DefaultElements.drawCheckButton,
+			],
+			eventHandler: function( ev: String ) trace(ev),
+		});
+
+		kha.input.Mouse.get().notify(
+			cyui.injectMouseDown,
+			cyui.injectMouseUp,
+			cyui.injectMouseMove,
+			null, null
+		);
+// end yui setup
+
 		kha.System.notifyOnDropFiles(function(path:String) {
 			dropPath = StringTools.rtrim(path);
 			dropPath = toRelative(dropPath, Main.cwd);
@@ -103,18 +132,37 @@ class Elements {
 
 		kha.System.notifyOnFrames(onFrames);
 		kha.Scheduler.addTimeTask(update, 0, 1 / 60);
+
+// plugin setup
+		var plugins = ['yui.js'];
+
+		for (p in plugins) {
+			kha.Assets.loadBlobFromPath(p, function( blob ) {
+#if js
+				untyped __js__("(1, eval)({0})", blob.toString());
+#end
+			});
+		}
+// end plugin setup
+	}
+
+	static function isImageAssetFilename( path: String ) : Bool {
+		return	StringTools.endsWith(path, ".jpg") ||
+				StringTools.endsWith(path, ".png") ||
+				StringTools.endsWith(path, ".k") ||
+				StringTools.endsWith(path, ".hdr");
+	}
+
+	static function isFontAssetFilename( path: String ) : Bool {
+		return StringTools.endsWith(path, ".ttf");
 	}
 
 	function importAsset(path:String) {
-		var isImage = StringTools.endsWith(path, ".jpg") ||
-					  StringTools.endsWith(path, ".png") ||
-					  StringTools.endsWith(path, ".k") ||
-					  StringTools.endsWith(path, ".hdr");
-
-		var isFont = StringTools.endsWith(path, ".ttf");
-		
+		var isImage = isImageAssetFilename(path);
+		var isFont = isFontAssetFilename(path);
 		var abspath = toAbsolute(path, Main.cwd);
 		abspath = kha.System.systemId == "Windows" ? StringTools.replace(abspath, "/", "\\") : abspath;
+		assetsToLoad += 1;
 
 		if (isImage) {
 			kha.Assets.loadImageFromPath(abspath, false, function(image:kha.Image) {
@@ -123,9 +171,11 @@ class Elements {
 				var asset:TAsset = { name: name, file: path, id: Canvas.getAssetId(canvas) };
 				canvas.assets.push(asset);
 				Canvas.assetMap.set(asset.id, image);
+				cyui.setCachedImage(path, image);
 
 				assetNames.push(name);
 				hwin.redraws = 2;
+				assetsToLoad -= 1;
 			});
 		}
 		else if (isFont) {
@@ -135,9 +185,24 @@ class Elements {
 				var asset:TAsset = { name: name, file: path, id: Canvas.getAssetId(canvas) };
 				canvas.assets.push(asset);
 				Canvas.assetMap.set(asset.id, font);
+				cyui.setCachedFont(path, font);
 
 				assetNames.push(name);
 				hwin.redraws = 2;
+				assetsToLoad -= 1;
+			});
+		} else {
+			kha.Assets.loadBlobFromPath(abspath, function(blob:kha.Blob) {
+				var ar = path.split("/");
+				var name = ar[ar.length - 1];
+				var asset:TAsset = { name: name, file: path, id: Canvas.getAssetId(canvas) };
+				canvas.assets.push(asset);
+				Canvas.assetMap.set(asset.id, blob);
+				cyui.setCachedBlob(path, blob);
+
+				assetNames.push(name);
+				hwin.redraws = 2;
+				assetsToLoad -= 1;
 			});
 		}
 	}
@@ -292,9 +357,19 @@ class Elements {
 		// Canvas resize
 		g.drawRect(canvas.x + scaled(canvas.width) - 3, canvas.y + scaled(canvas.height) - 3, 6, 6, 1);
 
-		Canvas.screenW = canvas.width;
-		Canvas.screenH = canvas.height;
-		Canvas.draw(cui, canvas, g);
+		// prevent crash due to pending assets
+		if (assetsToLoad <= 0) {
+			switch selectedRenderer {
+				case 0:
+					Canvas.screenW = canvas.width;
+					Canvas.screenH = canvas.height;
+					Canvas.draw(cui, canvas, g);
+				case 1:
+					cyui._screenW = canvas.width;
+					cyui._screenH = canvas.height;
+					cyui.drawFrame(g, canvas);
+			}
+		}
 
 		// Outline selected elem
 		if (selectedElem != null) {
@@ -332,7 +407,9 @@ class Elements {
 		ui.begin(g);
 
 		if (ui.window(Id.handle(), 0, 0, toolbarw, kha.System.windowHeight())) {
-			if (ui.tab(Id.handle(), "Tools")) {
+			var tab = Id.handle();
+
+			if (ui.tab(tab, "Tools")) {
 				ui._y = 50;
 				if (ui.button("Empty")) {
 					selectedElem = makeElem(ElementType.Empty);
@@ -366,6 +443,18 @@ class Elements {
 				if (ui.button("Input")) {
 					selectedElem = makeElem(ElementType.Input);
 				}
+
+				for (p in Plugin.plugins) {
+					if (p.drawToolsUi != null) {
+						p.drawToolsUi(this, ui);
+					}
+				}
+			}
+
+			for (p in Plugin.plugins) {
+				if (p.drawToolbarUi != null) {
+					p.drawToolbarUi(this, ui, tab);
+				}
 			}
 		}
 
@@ -377,6 +466,28 @@ class Elements {
 
 			var htab = Id.handle();
 			if (ui.tab(htab, "Project")) {
+				selectedRenderer = ui.combo(Id.handle({ position: selectedRenderer }), ['zui', 'yui'], 'Renderer', true, Align.Left);
+
+#if kha_debug_html5
+				if (ui.button('Load')) {
+					function onFileSelected( filename: String ) {
+						Main.cwd = haxe.io.Path.directory(filename);
+						kha.Assets.loadBlobFromPath(filename, function( blob ) {
+							var raw:TCanvas = haxe.Json.parse(blob.toString());
+							reinit(raw);
+						});
+					}
+
+					untyped __js__('
+						const { dialog } = require("electron").remote;
+						const selectedFile = dialog.showOpenDialog({ properties: ["openFile"] });
+
+						if (selectedFile) {
+							onFileSelected(selectedFile[0]);
+						}
+					');
+				}
+#end
 
 				if (ui.button("Save")) {
 
@@ -421,7 +532,6 @@ class Elements {
 					canvas.name = ui.textInput(Id.handle({text: canvas.name}), "Name", Right);
 					ui.row([1/2, 1/2]);
 
-					
 					var handlecw = Id.handle({text: canvas.width + ""});
 					var handlech = Id.handle({text: canvas.height + ""});
 					handlecw.text = canvas.width + "";
@@ -460,10 +570,19 @@ class Elements {
 							}
 							else {
 								if (elem.children == null) elem.children = [];
-								elem.children.push(selectedElem.id);
-								selectedElem.parent = elem.id;
-								selectedElem.x -= absx(elem);
-								selectedElem.y -= absy(elem);
+
+								if (elem.children.indexOf(selectedElem.id) == -1) {
+									var p = elemById(selectedElem.parent);
+
+									if (p != null) {
+										p.children.remove(selectedElem.id);
+									}
+
+									elem.children.push(selectedElem.id);
+									selectedElem.parent = elem.id;
+									selectedElem.x -= absx(elem);
+									selectedElem.y -= absy(elem);
+								}
 							}
 						}
 						// Draw
@@ -479,8 +598,10 @@ class Elements {
 						}
 						// Draw children
 						if (b) {
-							for (i in 0...elem.children.length) {
-								var id = elem.children[elem.children.length - 1 - i];
+							var children = elem.children.copy(); // fix crash on rightclick selected element
+
+							for (i in 0...children.length) {
+								var id = children[children.length - 1 - i];
 								ui.indent();
 								drawList(h, elemById(id));
 								ui.unindent();
@@ -493,7 +614,7 @@ class Elements {
 					}
 
 					ui.row([1/3, 1/3, 1/3]);
-					var elems = canvas.elements;
+
 					if (ui.button("Up") && selectedElem != null) {
 						moveElem(1);
 					}
@@ -509,7 +630,8 @@ class Elements {
 					var elem = selectedElem;
 					var id = elem.id;
 
-					if (ui.panel(Id.handle({selected: true}), "Properties")) {
+					if (ui.panel(Id.handle({selected: false}), "Properties")) {
+					// if (ui.panel(Id.handle({selected: true}), "Properties")) {
 						elem.visible = ui.check(Id.handle().nest(id, {selected: elem.visible == null ? true : elem.visible}), "Visible");
 						elem.name = ui.textInput(Id.handle().nest(id, {text: elem.name}), "Name", Right);
 						elem.text = ui.textInput(Id.handle().nest(id, {text: elem.text}), "Text", Right);
@@ -542,8 +664,35 @@ class Elements {
 						elem.color = Ext.colorWheel(ui, Id.handle().nest(id, {color: elem.color}), true, null, true);
 					}
 
-					if (ui.panel(Id.handle({selected: false}), "Align")) {
+					switch elem.type {
+						case Radio:
+							var state = switch elem.state {
+								case null: {
+									group: 'defaultGroup',
+									position: 0,
+								}
+								case RadioState(group, position): {
+									group: group,
+									position: position,
+								}
+								case other:
+									null;
+							}
+
+							if (state != null) {
+								if (ui.panel(Id.handle(), 'Radio')) {
+									state.group = ui.textInput(Id.handle().nest(id, { text: state.group }), 'Group', Align.Left, false);
+								}
+							} else {
+								trace('invalid element state');
+							}
+
+							elem.state = RadioState(state.group, state.position);
+						default:
 					}
+
+					// if (ui.panel(Id.handle({selected: false}), "Align")) {
+					// }
 
 					if (ui.panel(Id.handle({selected: false}), "Anchor")) {
 						var hanch = Id.handle().nest(id, {position: elem.anchor});
@@ -566,10 +715,55 @@ class Elements {
 						elem.event = ui.textInput(Id.handle().nest(id, {text: elem.event}), "Event", Right);
 					}
 
-					if (ui.panel(Id.handle({selected: false}), "Timeline")) {
-						// ui.row([1/2,1/2]);
-						// ui.button("Insert");
-						// ui.button("Remove");
+					// if (ui.panel(Id.handle({selected: false}), "Timeline")) {
+					// 	// ui.row([1/2,1/2]);
+					// 	// ui.button("Insert");
+					// 	// ui.button("Remove");
+					// }
+
+					if (ui.panel(Id.handle({ selected: false }), 'Navigation')) {
+						// TODO (DK) don't do it every frame, only when an element was added / removed / renamed
+						var elems = ['NONE'].concat(canvas.elements.map(function(e) return '${e.id} / ${e.name}'));
+
+						var uph = Id.handle().nest(id);
+						uph.position = elem.navigation != null ? elem.navigation.up != null ? elem.navigation.up : 0 : 0;
+						var usel = ui.combo(uph, elems, 'Up', true, Align.Left);
+
+						if (elem.navigation == null) {
+							elem.navigation = { up: usel }
+						} else {
+							elem.navigation.up = usel;
+						}
+
+						var downh = Id.handle().nest(id);
+						downh.position = elem.navigation != null ? elem.navigation.down != null ? elem.navigation.down : 0 : 0;
+						var dsel = ui.combo(downh, elems, 'Down', true, Align.Left);
+
+						if (elem.navigation == null) {
+							elem.navigation = { down: dsel }
+						} else {
+							elem.navigation.down = dsel;
+						}
+
+						var lefth = Id.handle().nest(id);
+						lefth.position = elem.navigation != null ? elem.navigation.left != null ? elem.navigation.left : 0 : 0;
+						var lsel = ui.combo(lefth, elems, 'Left', true, Align.Left);
+
+						if (elem.navigation == null) {
+							elem.navigation = { left: lsel }
+						} else {
+							elem.navigation.left = lsel;
+						}
+
+						var righth = Id.handle().nest(id);
+						righth.position = elem.navigation != null ? elem.navigation.right != null ? elem.navigation.right : 0 : 0;
+						var rsel = ui.combo(righth, elems, 'Right', true, Align.Left);
+
+						if (elem.navigation == null) {
+							elem.navigation = { right: rsel }
+						} else {
+							elem.navigation.right = rsel;
+						}
 					}
 				}
 			}
@@ -584,20 +778,20 @@ class Elements {
 						importAsset(path);
 					}
 				}
-				
+
 				if (canvas.assets.length > 0) {
 					ui.text("(Drag and drop assets to canvas)", zui.Zui.Align.Center);
 
 					var i = canvas.assets.length - 1;
 					while (i >= 0) {
 						var asset = canvas.assets[i];
-						var isFont = StringTools.endsWith(asset.name, ".ttf");
-						if (!isFont && ui.image(getImage(asset)) == State.Started) {
+						var isImage = isImageAssetFilename(asset.name);
+						if (isImage && ui.image(getImage(asset)) == State.Started) {
 							dragAsset = asset;
 						}
 						ui.row([7/8, 1/8]);
 						asset.name = ui.textInput(Id.handle().nest(asset.id, {text: asset.name}), "", Right);
-						assetNames[i + 1] = asset.name; // assetNames[0] == ""
+						assetNames[i + 1] = asset.name;
 						if (ui.button("X")) {
 							getImage(asset).unload();
 							canvas.assets.splice(i, 1);
@@ -607,9 +801,21 @@ class Elements {
 					}
 				}
 				else {
-					ui.text("(Drag and drop images and fonts here)", zui.Zui.Align.Center);
+					ui.text("(Drag and drop images, fonts and script files here)", zui.Zui.Align.Center);
 				}
 			}
+
+			for (p in Plugin.plugins) {
+				if (p.drawRightUi != null) {
+					p.drawRightUi(this, ui, htab);
+				}
+			}
+
+			// if (ui.tab(htab, 'Sprites')) {
+			// 	// create and edit sprites
+
+			// 	// Type: Image, SubTexture, NineSlice
+			// }
 
 			if (ui.tab(htab, "Preferences")) {
 				var hscale = Id.handle({value: 1.0});
@@ -699,13 +905,15 @@ class Elements {
 	}
 
 	function acceptDrag(index:Int) {
-		var elem = makeElem(ElementType.Image);
-		elem.asset = assetNames[index + 1]; // assetNames[0] == ""
-		elem.x = ui.inputX - canvas.x;
-		elem.y = ui.inputY - canvas.y;
-		elem.width = getImage(canvas.assets[index]).width;
-		elem.height = getImage(canvas.assets[index]).height;
-		selectedElem = elem;
+		if (isImageAssetFilename(assetNames[index + 1])) {
+			var elem = makeElem(ElementType.Image);
+			elem.asset = assetNames[index + 1];
+			elem.x = ui.inputX - canvas.x;
+			elem.y = ui.inputY - canvas.y;
+			elem.width = getImage(canvas.assets[index]).width;
+			elem.height = getImage(canvas.assets[index]).height;
+			selectedElem = elem;
+		}
 	}
 
 	function hitbox(x:Float, y:Float, w:Float, h:Float):Bool {
@@ -713,7 +921,6 @@ class Elements {
 	}
 
 	public function update() {
-
 		// Drag from assets panel
 		if (ui.inputReleased && dragAsset != null) {
 			if (ui.inputX < kha.System.windowWidth() - uiw) {
@@ -765,7 +972,7 @@ class Elements {
 				else if (dragLeft) { elem.x += Std.int(ui.inputDX); elem.width -= Std.int(ui.inputDX); }
 				if (dragBottom) elem.height += Std.int(ui.inputDY);
 				else if (dragTop) { elem.y += Std.int(ui.inputDY); elem.height -= Std.int(ui.inputDY); }
-			
+
 				if (elem.type != ElementType.Image) {
 					if (elem.width < 1) elem.width = 1;
 					if (elem.height < 1) elem.height = 1;
@@ -813,7 +1020,7 @@ class Elements {
 		}
 
 		// Pan canvas
-		if (ui.inputDownR) {
+		if (ui.inputDownM || (ui.inputDown && ui.isKeyPressed && ui.key == kha.input.KeyCode.Space)) {
 			coffX += Std.int(ui.inputDX);
 			coffY += Std.int(ui.inputDY);
 		}
@@ -825,6 +1032,7 @@ class Elements {
 			else if (zoom > 1.0) zoom = 1.0;
 			zoom = Math.round(zoom * 10) / 10;
 			cui.SCALE = cui.ops.scaleFactor * zoom;
+			// cyui.uiScale = cui.ops.scaleFactor * zoom;
 		}
 
 		// Canvas resize
@@ -878,7 +1086,7 @@ class Elements {
 		var topRect = Std.int(apph / 2 - modalRectH / 2);
 		var bottomRect = Std.int(apph / 2 + modalRectH / 2);
 		topRect += modalHeaderH;
-		
+
 		g.end();
 		uimodal.begin(g);
 		if (uimodal.window(Id.handle(), leftRect, topRect, modalRectW, modalRectH - 100)) {
